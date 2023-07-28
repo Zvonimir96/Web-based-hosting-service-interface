@@ -1,8 +1,8 @@
 from github import GitHub
-from credentials import TOKEN
 
 language = 'Python'
 username = 'Zvonimir96'
+TOKEN = None
 
 
 def main():
@@ -31,13 +31,25 @@ def main():
     gh.rate_limit()
 
     # Retrieve authorized user information
-    print(gh.user())
+    if TOKEN is not None:
+        print(gh.user())
 
-    # Retrieve all unprotected branches from NeoPixel-strip repository
+    repo = gh.repo('Test-repo')
+    # Retrieve all unprotected branches from Test-repo repository
     print(*gh.branches(repo, protected='false'), sep=', ')
 
-    # Retrieve main branch from NeoPixel-strip
+    # Retrieve main branch from Test-repo repository
     print(gh.branch(repo, 'main'))
+
+    # Retrieve all pull requests from Test-repo repository
+    print(*gh.pull_requests(repo), sep=', ')
+
+    # Retrieve repository branches to be merged
+    base_b = gh.branch(repo, 'B2')
+    head_b = gh.branch(repo, 'B1')
+
+    # Merge branches
+    gh.merge_branches(repo, base_b, head_b)
 
 
 if __name__ == "__main__":

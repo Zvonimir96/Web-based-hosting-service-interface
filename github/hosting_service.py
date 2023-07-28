@@ -14,15 +14,15 @@ class HostingService(ABC):
         self.username = username
 
     @abstractmethod
-    def repos(self, language=None, type=None, sort=None, direction=None, per_page=None, page=None):
+    def repos(self):
         pass
 
     @abstractmethod
-    def repo(self, repo_name):
+    def repo(self, repository_name):
         pass
 
     @abstractmethod
-    def languages(self, repo):
+    def languages(self, repository):
         pass
 
     @abstractmethod
@@ -30,7 +30,7 @@ class HostingService(ABC):
         pass
 
     @abstractmethod
-    def commits(self, repo):
+    def commits(self, repository):
         pass
 
     @abstractmethod
@@ -38,9 +38,18 @@ class HostingService(ABC):
         pass
 
     @abstractmethod
-    def branches(self, repo, protected, per_page, page):
+    def branches(self, repository):
         pass
 
     @abstractmethod
-    def branch(self, repo, branch_name):
+    def branch(self, repository, branch_name):
         pass
+
+    @abstractmethod
+    def merge_branches(self, repository, base_branch, head_branch):
+        pass
+
+    @abstractmethod
+    def pull_requests(self, repository):
+        pass
+

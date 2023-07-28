@@ -6,6 +6,7 @@ from .repository import Repository
 from .commit import Commit
 from .user import User
 from .branch import Branch
+from .pull import Pull
 
 
 # Function that appends query parameters to url

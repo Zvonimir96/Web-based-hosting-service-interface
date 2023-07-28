@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 from .hosting_service import HostingService
-from .utilities import User, Commit, Repository, Branch, add_query_parameters
+from .utilities import User, Commit, Repository, Branch, Pull, add_query_parameters
 
 # Host ip address is same for all instances of the class Github
 HOST = 'api.github.com'
@@ -26,8 +26,8 @@ class GitHub(HostingService):
         # Create default header
         self.header = {
             'Host': HOST,
-            'User-Agent': 'Web-based-hosting-service-interface',    # Mandatory header that identifies client
-            'Accept': 'application/vnd.github+json'                 # Recommended header
+            'User-Agent': 'Web-based-hosting-service-interface',  # Mandatory header that identifies client
+            'Accept': 'application/vnd.github+json'  # Recommended header
         }
 
         # Add token header if it exists
@@ -193,8 +193,8 @@ class GitHub(HostingService):
 
         :param repository: instance of a class Repository.
         :param optional protected: setting to true returns only protected branches. When set to false, only unprotected branches are returned. Omitting this parameter returns all branches.
-        :param optional per_page: the number of results per page (max 100).
-        :param optional page: page number of the results to fetch.
+        :param optional per_page: the number of results per page (max 100). Default 30.
+        :param optional page: page number of the results to fetch. Default 1.
         :return: list filled with instances of Branch class.
         """
 
@@ -243,3 +243,57 @@ class GitHub(HostingService):
         response_body = json.loads(response.read().decode())
 
         return Branch(response_body)
+
+    def merge_branches(self, repository, base_branch, head_branch, commit_message=None):
+        """
+        Merge two branches on given repository.
+
+        :param repository: instance of a class Repository.
+        :param base_branch: instance of a class Branch that the head will be merged into.
+        :param head_branch: instance of a class Branch that will be merged.
+        :param optional commit_message: commit message to use for the merge commit.
+        """
+        url = f'/repos/{self.username}/{repository.name}/merges'
+
+        # Create body parameters
+        body = {
+            'base': base_branch.name,
+            'head': head_branch.name
+        }
+
+        # Optional body parameter
+        if commit_message is not None:
+            body['commit_message'] = commit_message
+
+        # Converting dictionary to JSON
+        body = json.dumps(body)
+
+        # Send request and read response as a JSON format
+        self.conn.request('POST', url, body=body, headers=self.header)
+        response = self.conn.getresponse()
+
+        if response.status == 201:
+            print('Successful merge')
+        elif response.status == 204:
+            print('Branches already merged')
+
+    def pull_requests(self, repository):
+        """
+        Return all pulls created on repository.
+
+        :param repository: instance of a class Repository.
+        :return: list filled with instances of Commit class.
+        """
+        url = f'/repos/{self.username}/{repository.name}/pulls'
+
+        # Send request and read response as a JSON format
+        self.conn.request('GET', url, headers=self.header)
+        response = self.conn.getresponse()
+        response_body = json.loads(response.read().decode())
+
+        # Parse pull information
+        pulls = []
+        for pull in response_body:
+            pulls.append(Pull(pull))
+
+        return pulls

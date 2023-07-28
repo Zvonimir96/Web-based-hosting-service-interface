@@ -46,5 +46,15 @@ GitHub class contains following methods:
         :param repository: instance of a class Repository.
         :param branch_name: branch name.
         :return: instance of Branch class.
+- merge_branches(repository, base_branch, head_branch) - merge two branches on given repository.
+
+        :param repository: instance of a class Repository.
+        :param base_branch: instance of a class Branch that the head will be merged into.
+        :param head_branch: instance of a class Branch that will be merged.
+        :param optional commit_message: commit message to use for the merge commit.
+- pull_requests(repository) - return all pulls created on repository.
+        
+        :param repository: instance of a class Repository.
+        :return: list filled with instances of Commit class.
 
 
