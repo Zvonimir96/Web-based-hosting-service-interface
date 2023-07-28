@@ -4,7 +4,7 @@ This library is an interface to access the [GitHub REST API](https://docs.github
 repository, branch and commits on desired repository. 
 
 GitHub class contains following methods:
-- GitHub(username) - To generate token follow the link:
+- GitHub(username) - create instance of class. To generate token follow the link:
         https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
 
         :param username: GitHub account username.
